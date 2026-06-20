@@ -1,6 +1,6 @@
 # fm-app
 
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-blue.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 Application layer for First Motive's ROS2 stack. Groups the bringup launch
 orchestration and the operator TUI — the user-facing entry points that start and
@@ -12,7 +12,7 @@ layers, so its `.repos` pulls the
 [`fm-sim`](https://github.com/first-motive/fm-sim), and
 [`fm-teleop`](https://github.com/first-motive/fm-teleop) sibling repos.
 
-Part of First Motive's ROS2 (Humble) stack. Assembled with all seven package
+Part of First Motive's ROS2 (Humble) stack. Assembled with the four public package
 repos by [`fm-ros2`](https://github.com/first-motive/fm-ros2).
 
 ## Packages
