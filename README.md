@@ -38,6 +38,17 @@ colcon test && colcon test-result --verbose
 Sibling repos track `main` — fast inner loop while every repo churns together
 early; revisit exact-commit pinning at the first release.
 
+## Architecture
+
+`fm_tui` is the launcher an operator drives; `fm_bringup` is the composition root
+that resolves everything robot-specific and includes the lower layers (robot, sim,
+teleop).
+
+![bringup](docs/diagrams/bringup.svg)
+
+Full launch graph, runtime data flow, and visualization:
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Governance
 
 Owner-free-on-main — see [CONTRIBUTING.md](CONTRIBUTING.md) and

@@ -1,0 +1,19 @@
+# Visualization — generic across every system (view, sim, teleop, auto). Any ROS
+# graph topics feed two interchangeable clients: foxglove_bridge serves a browser
+# over a websocket (headless, remote); rviz2 renders locally (needs an X display).
+# Launched separately from the system it watches. Nodes are plum boxes, topics
+# cream pills.
+...@styles
+direction: right
+
+topics: /topics { class: topic }
+
+bridge: foxglove_bridge { class: node }
+rviz: rviz2 { class: node }
+studio: Foxglove Studio { class: node }
+window: RViz { class: node }
+
+topics -> bridge
+topics -> rviz
+bridge -> studio: ws://8765
+rviz -> window: X display

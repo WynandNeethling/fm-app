@@ -1,0 +1,38 @@
+# fm_tui launcher menu. Each block is three bands: human label, package, launch
+# file (see styles.d2). Backend selection (sim or real) is the hardware
+# abstraction — see hardware.d2.
+...@styles
+direction: down
+
+tui: "" {
+  grid-rows: 3
+  class: block
+  r: Launcher { class: role }
+  p: fm_tui { class: pkg }
+  a: fm_tui_launcher { class: art }
+}
+view: "" {
+  grid-rows: 3
+  class: block
+  r: View { class: role }
+  p: fm_description { class: pkg }
+  a: view_robot.launch.py { class: art }
+}
+teleop: "" {
+  grid-rows: 3
+  class: block
+  r: Teleop { class: role }
+  p: fm_teleop { class: pkg }
+  a: teleop.launch.py { class: art }
+}
+auto: "" {
+  grid-rows: 3
+  class: block
+  r: Auto { class: role }
+  p: fm_fsm { class: pkg }
+  a: autonomy.launch.py { class: art }
+}
+
+tui -> view
+tui -> teleop
+tui -> auto

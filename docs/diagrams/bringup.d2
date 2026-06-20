@@ -1,0 +1,53 @@
+# What fm_bringup composes, with the nodes each layer spawns. Description is the
+# foundation; control sits on it; manual (teleop) and autonomy (auto) layer on
+# control; all command paths reach the hardware boundary. Each block: human label
+# (role), package, then nodes. The Hardware Boundary is abstract (dashed) —
+# expanded in hardware.d2.
+...@styles
+direction: down
+
+desc: "" {
+  grid-rows: 4
+  class: block
+  r: Description { class: role }
+  p: fm_description { class: pkg }
+  a1: robot_state_publisher { class: art }
+  a2: joint_state_publisher { class: art }
+}
+control: "" {
+  grid-rows: 4
+  class: block
+  r: Control { class: role }
+  p: fm_control { class: pkg }
+  a1: controller_manager { class: art }
+  a2: controllers { class: art }
+}
+manual: "" {
+  grid-rows: 4
+  class: block
+  r: Manual { class: role }
+  p: fm_teleop { class: pkg }
+  a1: moveit_servo { class: art }
+  a2: input adapter { class: art }
+}
+auto: "" {
+  grid-rows: 4
+  class: block
+  r: Auto { class: role }
+  p: fm_policy { class: pkg }
+  a1: policy_serve { class: art }
+  a2: fm_fsm { class: art }
+}
+boundary: "" {
+  grid-rows: 2
+  class: zoom
+  r: Hardware Boundary { class: role }
+  a: sim_backend { class: art }
+}
+
+desc -> control
+control -> manual
+control -> auto
+control -> boundary
+manual -> boundary: commands
+auto -> boundary: commands
