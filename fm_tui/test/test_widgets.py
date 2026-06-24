@@ -37,12 +37,26 @@ def test_header_offline_status():
 
 
 def test_log_line_colours_by_severity():
-    line = LogView()._build_line("warn", "battery low")
+    line = LogView()._build_line("warn", "battery low", "12:04:52")
     styles = " ".join(str(span.style) for span in line.spans)
     assert palette.AMBER in styles
 
 
+def test_log_line_renders_timestamp_glyph_and_severity():
+    line = LogView()._build_line("info", "bringup ready", "12:04:51")
+    glyph, _colour = palette.SEVERITY["info"]
+    assert line.plain == f"12:04:51 {glyph} INFO  bringup ready"
+
+
+def test_log_lines_align_across_severities():
+    log = LogView()
+    info = log._build_line("info", "x", "12:04:51")
+    error = log._build_line("error", "y", "12:04:52")
+    # Message starts at the same column regardless of severity width.
+    assert info.plain.index("x") == error.plain.index("y")
+
+
 def test_unknown_severity_falls_back_to_cream():
-    line = LogView()._build_line("trace", "mystery")
+    line = LogView()._build_line("trace", "mystery", "12:04:53")
     styles = " ".join(str(span.style) for span in line.spans)
     assert palette.CREAM in styles

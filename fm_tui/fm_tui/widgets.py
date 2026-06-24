@@ -9,6 +9,8 @@ and readable even bare.
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from rich.table import Table
 from rich.text import Text
 from textual.containers import Container
@@ -118,12 +120,18 @@ class LogView(RichLog):
         kwargs.setdefault("wrap", True)
         super().__init__(**kwargs)
 
-    def _build_line(self, severity: str, message: str) -> Text:
-        _glyph, colour = SEVERITY.get(severity.lower(), ("·", CREAM))
+    def _build_line(self, severity: str, message: str, timestamp: str) -> Text:
+        # Timestamp is passed in (not read from the clock here) so the layout
+        # stays deterministic for tests; log_line stamps the live time.
+        glyph, colour = SEVERITY.get(severity.lower(), ("·", CREAM))
+        # Fixed-width gutter + glyph + severity columns keep rows aligned.
         line = Text()
+        line.append(f"{timestamp} ", style=f"dim {SAND}")
+        line.append(f"{glyph} ", style=colour)
         line.append(f"{severity.upper():<5} ", style=f"bold {colour}")
         line.append(message, style=colour)
         return line
 
     def log_line(self, severity: str, message: str) -> None:
-        self.write(self._build_line(severity, message))
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        self.write(self._build_line(severity, message, timestamp))
