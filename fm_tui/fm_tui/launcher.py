@@ -8,8 +8,9 @@ for wired actions::
     ◢ FIRST MOTIVE · ROBOT DESCRIPTION › G1_D
     ┏ MENU ────────────────────────────┓
     ┃ ▸ Robot Description               ┃   ← caret marks the highlighted row
-    ┃   Teleop            (not yet wired)┃
-    ┃   Autonomous        (not yet wired)┃
+    ┃   Teleop                          ┃
+    ┃   Autonomous                      ┃   ← grey: stub, no launch graph yet
+    ┃   Simulation                      ┃
     ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
     Footer   [Q] QUIT   [ESC] BACK
 
@@ -145,14 +146,9 @@ class FmLauncherApp(App):
 
     def _items_for_level(self) -> list[_MenuItem]:
         if self._level == _ACTION:
-            return [
-                _MenuItem(
-                    a.label if a.wired else f"{a.label}  (not yet wired)",
-                    a,
-                    stub=not a.wired,
-                )
-                for a in actions()
-            ]
+            # Stub actions read as disabled from the grey styling alone — no
+            # "(not yet wired)" suffix needed.
+            return [_MenuItem(a.label, a, stub=not a.wired) for a in actions()]
         if self._level == _ROBOT:
             return [_MenuItem(r.label, r) for r in self._action.robots]
         if self._level == _VARIANT:

@@ -55,7 +55,7 @@ def test_backend_path_dispatches_with_sim_backend():
         async with FmLauncherApp().run_test() as pilot:
             await pilot.pause()
             menu = pilot.app.query_one("#menu", ListView)
-            menu.index = 1  # Simulation (wired, has backends)
+            menu.index = 3  # Simulation (last, wired, has backends)
             await pilot.press("enter")  # action -> robot (g1_d, first in the sim list)
             await pilot.press("enter")  # robot -> variant (g1_d)
             await pilot.press("enter")  # variant -> backend (mujoco default)
@@ -79,7 +79,7 @@ def test_stub_does_not_dispatch():
         async with FmLauncherApp().run_test() as pilot:
             await pilot.pause()
             menu = pilot.app.query_one("#menu", ListView)
-            menu.index = 3  # autonomous (stub)
+            menu.index = 2  # autonomous (stub)
             await pilot.press("enter")
             await pilot.pause()
             # No dispatch: app still running on the action level, no exit value.
