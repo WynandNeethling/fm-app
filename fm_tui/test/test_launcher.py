@@ -8,6 +8,9 @@ import asyncio
 
 from textual.widgets import ListView
 
+from textual.color import Color
+
+from fm_tui import palette
 from fm_tui.launcher import FmLauncherApp
 from fm_tui.registry import actions
 from fm_tui.theme import Header
@@ -100,6 +103,24 @@ def test_first_row_highlighted_after_each_level():
             # Robot level: first row highlighted immediately on entry.
             assert menu.index == 0
             assert menu.highlighted_child is menu.children[0]
+
+    asyncio.run(go())
+
+
+def test_selected_row_highlight_is_plum_not_blue():
+    # Guards the recurring "selected row is blue" bug: the highlight CSS must
+    # repaint the row background plum, overriding Textual's blue accent.
+    async def go():
+        async with FmLauncherApp().run_test() as pilot:
+            await pilot.pause()
+            menu = pilot.app.query_one("#menu", ListView)
+            highlighted = [
+                row
+                for row in menu.children
+                if row.has_class("-highlight") or row.has_class("--highlight")
+            ]
+            assert highlighted, "no highlighted row"
+            assert highlighted[0].styles.background == Color.parse(palette.PLUM)
 
     asyncio.run(go())
 
