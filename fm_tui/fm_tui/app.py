@@ -54,6 +54,7 @@ class FmTuiApp(App):
     def on_mount(self) -> None:
         self.query_one("#nodes", Static).update("(connecting…)")
         self.query_one("#topics", Static).update("(connecting…)")
+        self.query_one(Header).set_status(connected=False)
         if not self._connect_ros:
             return
         # Import here so the app still constructs (and tests still run) without
@@ -77,6 +78,7 @@ class FmTuiApp(App):
         topics = self._ros.topics()
         self.query_one("#nodes", Static).update("\n".join(nodes) or "(none)")
         self.query_one("#topics", Static).update("\n".join(topics) or "(none)")
+        self.query_one(Header).set_status(connected=True, node_count=len(nodes))
 
     def on_unmount(self) -> None:
         if self._ros is not None:

@@ -9,6 +9,7 @@ and readable even bare.
 
 from __future__ import annotations
 
+from rich.table import Table
 from rich.text import Text
 from textual.containers import Container
 from textual.widgets import RichLog, Static
@@ -17,20 +18,68 @@ from fm_tui.palette import CREAM, LILAC, PLUM, SAND, SEVERITY
 
 
 class Header(Static):
-    """Branded title bar."""
+    """Branded two-zone status bar: brand mark left, live ROS status right.
+
+    Drawn as a full-width grid — ``◢ FIRST MOTIVE · <title>`` on the left, a
+    connection/node-count readout on the right. ``update(title)`` rewrites the
+    title (the launcher's breadcrumb); ``set_status`` paints the right zone. The
+    right zone stays blank until ``set_status`` is first called, so the launcher
+    (no ROS link) shows a bare brand bar.
+    """
 
     DEFAULT_CSS = f"""
     Header {{
-        color: {CREAM};
         background: {PLUM};
-        text-style: bold;
         height: 1;
         padding: 0 1;
     }}
     """
 
     def __init__(self, title: str = "", **kwargs) -> None:
-        super().__init__(title, **kwargs)
+        super().__init__(**kwargs)
+        self._title = title
+        self._connected: bool | None = None
+        self._node_count = 0
+        self._render_bar()
+
+    def update(self, title: str = "") -> None:
+        """Rewrite the title zone (used by the launcher breadcrumb)."""
+        self._title = title
+        self._render_bar()
+
+    def set_status(self, connected: bool, node_count: int = 0) -> None:
+        """Paint the right zone: ``● LIVE · N nodes`` or ``○ OFFLINE``."""
+        self._connected = connected
+        self._node_count = node_count
+        self._render_bar()
+
+    def _brand_text(self) -> Text:
+        brand = Text()
+        brand.append("◢ ", style=LILAC)
+        brand.append("FIRST MOTIVE", style=f"bold {CREAM}")
+        if self._title:
+            brand.append(f" · {self._title.upper()}", style=SAND)
+        return brand
+
+    def _status_text(self, connected: bool, node_count: int) -> Text:
+        status = Text()
+        if connected:
+            status.append("ROS2 ", style=SAND)
+            status.append("● ", style=LILAC)
+            status.append(f"LIVE · {node_count} nodes", style=CREAM)
+        else:
+            status.append("ROS2 ○ OFFLINE", style=f"dim {SAND}")
+        return status
+
+    def _render_bar(self) -> None:
+        right = Text() if self._connected is None else self._status_text(
+            self._connected, self._node_count
+        )
+        bar = Table.grid(expand=True)
+        bar.add_column(justify="left")
+        bar.add_column(justify="right")
+        bar.add_row(self._brand_text(), right)
+        super().update(bar)
 
 
 class BorderedPanel(Container):
