@@ -36,19 +36,10 @@ from rich.console import Console
 from rich.style import Style
 from rich.text import Text
 
-# First Motive palette — mirrors docs/diagrams/styles.d2.
-PLUM = "#3B3443"
-LILAC = "#B6A5C6"
-SAND = "#E7DDC8"
-CREAM = "#ECE2CF"
-
-# Role -> colour. ``step`` is an active launch step; ``info`` a secondary note
-# (endpoints, teardown hint); ``done`` a completed milestone.
-ROLES = {
-    "step": LILAC,
-    "info": SAND,
-    "done": CREAM,
-}
+# Palette lives in fm_tui.palette so run.sh and the TUI share one source of
+# brand colour. Re-exported here for callers (and tests) that read them off the
+# banner module.
+from fm_tui.palette import CREAM, LILAC, PLUM, ROLES, SAND  # noqa: F401
 
 
 def emit(number, title: str, role: str = "step", *, console: Console | None = None) -> None:
