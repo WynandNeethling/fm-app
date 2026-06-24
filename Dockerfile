@@ -1,0 +1,32 @@
+# fm-app image — the full-stack launcher image, FROM the robot layer.
+#
+# fm-app is the integration repo: its TUI launcher drives every backend, so this
+# image reconverges the union of the sim and teleop apt deps on top of the robot
+# layer rather than expecting a separate image per backend. Downstream, the
+# orchestrator (fm-ros2) consumes this image. The entrypoint, WORKDIR, and the
+# robot/viz tooling are inherited from fm-robot — this layer only adds the sim +
+# teleop packages plus the TUI's Python deps.
+FROM ghcr.io/first-motive/fm-robot:humble
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Sim + teleop union: the MuJoCo and Gazebo ros2_control plugins, the ros_gz
+# bridge/sim pair, MoveIt + servo for teleop, and the headless GL stack (xvfb +
+# mesa) the simulators render against. All on the Humble apt mirror for both
+# arm64 and amd64, so no source builds.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ros-humble-mujoco-ros2-control \
+      ros-humble-gz-ros2-control \
+      ros-humble-ros-gz-sim \
+      ros-humble-ros-gz-bridge \
+      ros-humble-moveit \
+      ros-humble-moveit-servo \
+      xvfb \
+      libgl1-mesa-dri \
+      libglu1-mesa \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python deps colcon does not resolve: the MuJoCo physics engine the sim core
+# drives, and textual — fm_tui's TUI framework. The textual pin tracks
+# fm_tui/setup.py (textual==0.74.0); keep the two in lockstep.
+RUN pip install --no-cache-dir mujoco textual==0.74.0
