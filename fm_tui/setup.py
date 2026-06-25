@@ -18,7 +18,7 @@ setup(
         # SHA-pinned git install (== tag v0.1.0), matching the sibling externals'
         # immutable pinning; pip resolves it, colcon does not, so the Dockerfile
         # installs it too. PyPI-ready: swap for a version spec once published.
-        "fm-tools @ git+https://github.com/first-motive/fm-tools@3523b395365909d1b3b49e82f83cebc931910ae4",
+        "fm-tools @ git+https://github.com/first-motive/fm-tools@5d9ef62f9449321730b8ebcacef7be3bc13448f5",
     ],
     zip_safe=True,
     maintainer="First Motive",

@@ -56,9 +56,11 @@ jobs:
             ros-humble-rosidl-generator-dds-idl \
             ros-humble-cyclonedds ros-humble-rmw-cyclonedds-cpp
           # Python deps colcon does not resolve: fm_tui's TUI framework + the sim
-          # core's physics engine (matches docker/Dockerfile.base in fm-ros2).
+          # core's physics engine (matches docker/Dockerfile.base in fm-ros2), and
+          # fm-tools — the shared wheel fm_tui imports (SHA-pinned == v0.1.0).
           apt-get install -y python3-pip
-          python3 -m pip install --no-cache-dir mujoco textual==0.74.0
+          python3 -m pip install --no-cache-dir mujoco textual==0.74.0 \
+            "fm-tools @ git+https://github.com/first-motive/fm-tools@5d9ef62f9449321730b8ebcacef7be3bc13448f5"
           rosdep update
           rosdep install --from-paths src external --ignore-src -y -r
 

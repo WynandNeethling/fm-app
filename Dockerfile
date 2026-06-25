@@ -44,4 +44,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # v0.1.0). The textual pin tracks fm_tui/setup.py (textual==0.74.0); keep the two
 # in lockstep, and the fm-tools SHA in lockstep with fm_tui/setup.py.
 RUN pip install --no-cache-dir mujoco textual==0.74.0 \
-      "fm-tools @ git+https://github.com/first-motive/fm-tools@3523b395365909d1b3b49e82f83cebc931910ae4"
+      "fm-tools @ git+https://github.com/first-motive/fm-tools@5d9ef62f9449321730b8ebcacef7be3bc13448f5"
